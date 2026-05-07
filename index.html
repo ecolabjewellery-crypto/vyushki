@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вьюшки — Baikal View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09100f;
+  --surface: #0e1a18;
+  --surface2: #142320;
+  --border: #1e3330;
+  --accent: #3dd6b0;
+  --accent2: #1fa882;
+  --gold: #c9a84c;
+  --gold-dim: #7a6330;
+  --text: #d4e8e4;
+  --text-dim: #6a9990;
+  --danger: #e05555;
+  --ok: #3dd6b0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, #0d3d32 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 80%, #071f1a 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 0 0;
+  margin-bottom: 48px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+}
+.logo-top {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.logo-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.logo-coin {
+  color: var(--gold);
+}
+
+.header-right {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+.last-updated {
+  font-size: 11px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+/* ── SEARCH ── */
+.search-block {
+  margin-bottom: 40px;
+}
+
+.search-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.search-label span { color: var(--accent); }
+
+.search-row {
+  display: flex;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-family: 'Golos Text', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input::placeholder { color: var(--text-dim); opacity: 0.5; }
+.search-input:focus { border-color: var(--accent2); }
+
+.search-btn {
+  background: var(--accent2);
+  color: #041a16;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-family: 'Golos Text', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-btn:hover { background: var(--accent); }
+
+/* ── PROFILE CARD ── */
+.profile-card {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.3s ease;
+}
+.profile-card.visible { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent2), #0a5c4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+}
+.profile-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.balance-display {
+  margin-left: auto;
+  text-align: right;
+}
+.balance-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+.balance-label {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.pstat {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.pstat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.pstat-lbl {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+/* ── SUBMISSIONS TABLE ── */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.submissions-list { display: flex; flex-direction: column; gap: 8px; }
+.sub-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.sub-date { font-size: 12px; color: var(--text-dim); min-width: 70px; }
+.sub-type { font-size: 13px; flex: 1; }
+.sub-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.status-approved { background: #0d2e25; color: var(--ok); }
+.status-pending { background: #2a2510; color: #c9a84c; }
+.status-rejected { background: #2e1010; color: var(--danger); }
+
+.sub-views {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 50px;
+  text-align: right;
+}
+
+.no-result {
+  text-align: center;
+  padding: 32px;
+  color: var(--text-dim);
+  font-size: 14px;
+  display: none;
+}
+.no-result.visible { display: block; }
+
+/* ── DIVIDER ── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 36px 0;
+}
+
+/* ── GRID SECTIONS ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media(max-width: 580px) { .grid2 { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+.panel-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+/* ── LEADERBOARD ── */
+.leader-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+}
+.leader-row:first-of-type { border-top: none; }
+.leader-rank {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dim);
+  min-width: 24px;
+}
+.leader-rank.top { color: var(--gold); }
+.leader-name { flex: 1; font-size: 13px; font-weight: 500; }
+.leader-views {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+/* ── TASKS ── */
+.task-item {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--accent2);
+}
+.task-item:last-child { margin-bottom: 0; }
+.task-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.task-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px; }
+.task-footer { display: flex; justify-content: space-between; align-items: center; }
+.task-reward {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.task-deadline { font-size: 11px; color: var(--text-dim); }
+
+/* ── REWARDS ── */
+.reward-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.reward-item:first-of-type { border-top: none; }
+.reward-ico { font-size: 22px; }
+.reward-name { flex: 1; font-size: 13px; font-weight: 500; }
+.reward-cost {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.reward-cost span { font-size: 11px; color: var(--text-dim); font-family: 'Golos Text', sans-serif; font-weight: 400; }
+
+/* ── SUBMIT BUTTON ── */
+.submit-block {
+  margin-top: 32px;
+  text-align: center;
+}
+.submit-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent2), #0a6e55);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 16px;
+  padding: 18px 40px;
+  font-family: 'Golos Text', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 8px 32px rgba(29, 168, 130, 0.25);
+}
+.submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.submit-sub { font-size: 12px; color: var(--text-dim); margin-top: 10px; }
+
+/* ── LOADING ── */
+.loading {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  padding: 20px;
+  display: none;
+}
+.loading.visible { display: block; }
+
+/* ── ERROR ── */
+.error-banner {
+  background: #2e1010;
+  border: 1px solid #5c2020;
+  color: #f87171;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  display: none;
+}
+.error-banner.visible { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-top">Baikal View</div>
+      <div class="logo-main">Вью<span class="logo-coin">🪙</span>шки</div>
+    </div>
+    <div class="header-right">
+      Внутренняя валюта команды
+      <div class="last-updated" id="lastUpdated">обновление данных...</div>
+    </div>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="search-block">
+    <div class="search-label">Найди <span>себя</span><br>по имени</div>
+    <div class="search-row">
+      <input class="search-input" id="searchInput" type="text" placeholder="Имя Фамилия..." autocomplete="off">
+      <button class="search-btn" onclick="searchPerson()">Найти</button>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-banner" id="errorBanner">
+    Не удалось загрузить данные из Google Sheets. Проверьте что таблица опубликована (Файл → Поделиться → Опубликовать в интернете).
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading" id="loadingIndicator">Загружаем данные...</div>
+
+  <!-- PROFILE CARD -->
+  <div class="profile-card" id="profileCard">
+    <div class="profile-top">
+      <div class="profile-avatar" id="profileAvatar">М</div>
+      <div>
+        <div class="profile-name" id="profileName">Имя Фамилия</div>
+        <div class="profile-sub" id="profileSub">участник программы</div>
+      </div>
+      <div class="balance-display">
+        <div class="balance-num" id="profileBalance">0</div>
+        <div class="balance-label">🪙 вьюшек</div>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="pstat">
+        <div class="pstat-val" id="statEarned">0</div>
+        <div class="pstat-lbl">заработано</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-val" id="statSpent">0</div>
+        <div class="pstat-lbl">потрачено</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-val" id="statPubs">0</div>
+        <div class="pstat-lbl">публикаций</div>
+      </div>
+    </div>
+
+    <div class="section-title">История подач</div>
+    <div class="submissions-list" id="submissionsList"></div>
+  </div>
+
+  <!-- NO RESULT -->
+  <div class="no-result" id="noResult">
+    Сотрудник не найден. Проверь написание имени — оно должно совпадать с таблицей.
+  </div>
+
+  <hr class="divider">
+
+  <!-- LEADERBOARD + TASKS -->
+  <div class="grid2">
+
+    <div class="panel">
+      <div class="panel-title">🏆 Рейтинг команды</div>
+      <div id="leaderboard"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">📋 Задания недели</div>
+      <div id="tasksList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
+    </div>
+
+  </div>
+
+  <!-- REWARDS -->
+  <div class="panel" style="margin-bottom:0">
+    <div class="panel-title">🎁 На что тратить вьюшки</div>
+    <div id="rewardsList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-block">
+    <a class="submit-btn" id="submitLink" href="#" target="_blank">
+      📸 Подать контент
+    </a>
+    <div class="submit-sub">Открывается форма подачи — заполни и прикрепи файл</div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  КОНФИГУРАЦИЯ — замени на свои значения
+// ══════════════════════════════════════════════
+const CONFIG = {
+  // ID таблицы из URL: docs.google.com/spreadsheets/d/ВОТ_ЭТОТ_ID/edit
+  SHEET_ID: 'ВСТАВЬ_ID_ТАБЛИЦЫ_СЮДА',
+
+  // Ссылка на Google Form для подачи контента
+  FORM_URL: 'ВСТАВЬ_ССЫЛКУ_НА_ФОРМУ_СЮДА',
+
+  // Названия листов в таблице (должны совпадать точно)
+  SHEETS: {
+    balances:    'Balances',
+    submissions: 'Submissions',
+    rewards:     'Rewards',
+    tasks:       'Tasks',
+  }
+};
+// ══════════════════════════════════════════════
+
+function sheetUrl(sheetName) {
+  return `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+async function fetchSheet(sheetName) {
+  const res = await fetch(sheetUrl(sheetName));
+  const text = await res.text();
+  // Google возвращает JSONP — вырезаем JSON
+  const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+  const cols = json.table.cols.map(c => c.label);
+  const rows = json.table.rows.map(row =>
+    Object.fromEntries(cols.map((col, i) => [col, row.c[i]?.v ?? '']))
+  );
+  return rows;
+}
+
+let allData = { balances: [], submissions: [], rewards: [], tasks: [] };
+
+async function loadAll() {
+  document.getElementById('loadingIndicator').classList.add('visible');
+  document.getElementById('errorBanner').classList.remove('visible');
+  try {
+    const [balances, submissions, rewards, tasks] = await Promise.all([
+      fetchSheet(CONFIG.SHEETS.balances),
+      fetchSheet(CONFIG.SHEETS.submissions),
+      fetchSheet(CONFIG.SHEETS.rewards),
+      fetchSheet(CONFIG.SHEETS.tasks),
+    ]);
+    allData = { balances, submissions, rewards, tasks };
+    document.getElementById('lastUpdated').textContent = 'обновлено: ' + new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+    renderLeaderboard();
+    renderRewards();
+    renderTasks();
+  } catch(e) {
+    document.getElementById('errorBanner').classList.add('visible');
+    console.error(e);
+  }
+  document.getElementById('loadingIndicator').classList.remove('visible');
+
+  // Ставим ссылку на форму
+  document.getElementById('submitLink').href = CONFIG.FORM_URL || '#';
+}
+
+function renderLeaderboard() {
+  const sorted = [...allData.balances]
+    .filter(r => r['Имя'])
+    .sort((a, b) => Number(b['Баланс']) - Number(a['Баланс']));
+
+  const el = document.getElementById('leaderboard');
+  if (!sorted.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px">Нет данных</div>'; return; }
+
+  el.innerHTML = sorted.map((r, i) => `
+    <div class="leader-row">
+      <div class="leader-rank ${i < 3 ? 'top' : ''}">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i+1}</div>
+      <div class="leader-name">${r['Имя']}</div>
+      <div class="leader-views">${Number(r['Баланс']||0)} 🪙</div>
+    </div>
+  `).join('');
+}
+
+function renderRewards() {
+  const el = document.getElementById('rewardsList');
+  if (!allData.rewards.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px">Нет данных</div>'; return; }
+
+  el.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px">` +
+    allData.rewards.map(r => `
+      <div class="reward-item">
+        <div class="reward-ico">${r['Иконка'] || '🎁'}</div>
+        <div class="reward-name">${r['Название']}</div>
+        <div class="reward-cost">${r['Вьюшек']} <span>вьюшек</span></div>
+      </div>
+    `).join('') + `</div>`;
+}
+
+function renderTasks() {
+  const el = document.getElementById('tasksList');
+  const active = allData.tasks.filter(t => t['Название']);
+  if (!active.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px">Нет активных заданий</div>'; return; }
+
+  el.innerHTML = active.map(t => `
+    <div class="task-item">
+      <div class="task-title">${t['Название']}</div>
+      <div class="task-desc">${t['Описание'] || ''}</div>
+      <div class="task-footer">
+        <div class="task-reward">${t['Вьюшек']} 🪙</div>
+        <div class="task-deadline">${t['Дедлайн'] ? 'до ' + t['Дедлайн'] : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function searchPerson() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const profileCard = document.getElementById('profileCard');
+  const noResult = document.getElementById('noResult');
+
+  profileCard.classList.remove('visible');
+  noResult.classList.remove('visible');
+
+  if (!q) return;
+
+  const person = allData.balances.find(r =>
+    r['Имя'] && r['Имя'].toLowerCase().includes(q)
+  );
+
+  if (!person) {
+    noResult.classList.add('visible');
+    return;
+  }
+
+  const name = person['Имя'];
+  const earned = Number(person['Начислено'] || 0);
+  const spent = Number(person['Потрачено'] || 0);
+  const balance = Number(person['Баланс'] || 0);
+
+  document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileBalance').textContent = balance;
+  document.getElementById('statEarned').textContent = earned;
+  document.getElementById('statSpent').textContent = spent;
+
+  // Submissions for this person
+  const subs = allData.submissions.filter(s =>
+    s['Имя'] && s['Имя'].toLowerCase().includes(q)
+  ).sort((a,b) => (b['Дата']||'').localeCompare(a['Дата']||''));
+
+  document.getElementById('statPubs').textContent = subs.filter(s => s['Статус'] === 'approved').length;
+
+  const list = document.getElementById('submissionsList');
+  if (!subs.length) {
+    list.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:8px 0">Подач ещё нет</div>';
+  } else {
+    const statusLabel = { approved: 'принято', pending: 'на проверке', rejected: 'отклонено' };
+    const statusClass = { approved: 'status-approved', pending: 'status-pending', rejected: 'status-rejected' };
+    list.innerHTML = subs.map(s => {
+      const st = (s['Статус']||'pending').toLowerCase();
+      return `
+        <div class="sub-item">
+          <div class="sub-date">${s['Дата'] || '—'}</div>
+          <div class="sub-type">${s['Тип'] || 'Контент'}</div>
+          <div class="sub-status ${statusClass[st] || 'status-pending'}">${statusLabel[st] || st}</div>
+          <div class="sub-views">${st === 'approved' ? (s['Вьюшки']||0) + ' 🪙' : '—'}</div>
+        </div>`;
+    }).join('');
+  }
+
+  profileCard.classList.add('visible');
+}
+
+// Enter в поиске
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchPerson();
+});
+
+// Запуск
+loadAll();
+// Автообновление каждые 5 минут
+setInterval(loadAll, 5 * 60 * 1000);
+</script>
+</body>
+</html>
