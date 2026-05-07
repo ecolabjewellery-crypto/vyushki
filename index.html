@@ -528,7 +528,7 @@ const CONFIG = {
   SHEET_ID: '1BIlVSNuSGDB7a7ywXWmoPpn6QfKENKAs7XWtDhg7rVw',
 
   // Ссылка на Google Form для подачи контента
-  FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfslJI0mNEb3jSMxu6u-w34CfA2M_GUd8o6bBQOx-6Yv3rddg/viewform?usp=publish-editor',
+  FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfslJI0mNEb3jSMxu6u-w34CfA2M_GUd8o6bBQOx-6Yv3rddg/viewform',
 
   // Названия листов в таблице (должны совпадать точно)
   SHEETS: {
@@ -662,11 +662,12 @@ function searchPerson() {
   document.getElementById('statSpent').textContent = spent;
 
   // Submissions for this person
-  const subs = allData.submissions.filter(s =>
-    s['Имя'] && s['Имя'].toLowerCase().includes(q)
-  ).sort((a,b) => (b['Дата']||'').localeCompare(a['Дата']||''));
+  const subs = allData.submissions.filter(s => {
+    const name = s['Твоё имя и фамилия'] || s['Имя'] || '';
+    return name.toLowerCase().includes(q);
+  }).sort((a,b) => (b['Timestamp']||b['Дата']||'').localeCompare(a['Timestamp']||a['Дата']||''));
 
-  document.getElementById('statPubs').textContent = subs.filter(s => s['Статус'] === 'approved').length;
+  document.getElementById('statPubs').textContent = subs.filter(s => (s['Статус']||'').toLowerCase() === 'approved').length;
 
   const list = document.getElementById('submissionsList');
   if (!subs.length) {
@@ -676,10 +677,12 @@ function searchPerson() {
     const statusClass = { approved: 'status-approved', pending: 'status-pending', rejected: 'status-rejected' };
     list.innerHTML = subs.map(s => {
       const st = (s['Статус']||'pending').toLowerCase();
+      const date = s['Timestamp'] ? new Date(s['Timestamp']).toLocaleDateString('ru-RU') : (s['Дата']||'—');
+      const type = s['Тип контента'] || s['Тип'] || 'Контент';
       return `
         <div class="sub-item">
-          <div class="sub-date">${s['Дата'] || '—'}</div>
-          <div class="sub-type">${s['Тип'] || 'Контент'}</div>
+          <div class="sub-date">${date}</div>
+          <div class="sub-type">${type}</div>
           <div class="sub-status ${statusClass[st] || 'status-pending'}">${statusLabel[st] || st}</div>
           <div class="sub-views">${st === 'approved' ? (s['Вьюшки']||0) + ' 🪙' : '—'}</div>
         </div>`;
