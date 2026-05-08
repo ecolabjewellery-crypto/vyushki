@@ -91,6 +91,76 @@ header {
   margin-top: 2px;
 }
 
+/* ── RULES BLOCK ── */
+.rules-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px 28px;
+  margin-bottom: 36px;
+}
+.rules-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.rules-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.rules-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  max-width: 480px;
+}
+.rate-badge {
+  background: var(--surface2);
+  border: 1px solid var(--gold-dim);
+  border-radius: 14px;
+  padding: 12px 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.rate-top {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+.rate-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+.rule-item {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.rule-item strong {
+  color: var(--text);
+  display: block;
+  margin-bottom: 2px;
+  font-size: 13px;
+}
+
 /* ── SEARCH ── */
 .search-block {
   margin-bottom: 40px;
@@ -331,25 +401,71 @@ header {
   color: var(--gold);
 }
 
-/* ── TASKS ── */
+/* ── TASKS ACCORDION ── */
+.tasks-scroll {
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.tasks-scroll::-webkit-scrollbar { width: 4px; }
+.tasks-scroll::-webkit-scrollbar-track { background: transparent; }
+.tasks-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
 .task-item {
   background: var(--surface2);
   border-radius: 10px;
-  padding: 12px 14px;
   margin-bottom: 8px;
   border-left: 3px solid var(--accent2);
+  overflow: hidden;
 }
 .task-item:last-child { margin-bottom: 0; }
-.task-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-.task-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px; }
-.task-footer { display: flex; justify-content: space-between; align-items: center; }
+
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.task-header:hover { background: rgba(255,255,255,0.02); }
+
+.task-title { font-size: 14px; font-weight: 600; flex: 1; }
 .task-reward {
   font-family: 'Cormorant Garamond', serif;
   font-size: 18px;
   font-weight: 700;
   color: var(--gold);
+  white-space: nowrap;
 }
-.task-deadline { font-size: 11px; color: var(--text-dim); }
+.task-chevron {
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  margin-left: 4px;
+}
+.task-item.open .task-chevron { transform: rotate(180deg); }
+
+.task-body {
+  display: none;
+  padding: 0 14px 12px;
+  border-top: 1px solid var(--border);
+}
+.task-item.open .task-body { display: block; }
+.task-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-top: 10px;
+}
+.task-deadline {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+/* ── TASKS OLD (remove) ── */
 
 /* ── REWARDS ── */
 .reward-item {
@@ -431,6 +547,31 @@ header {
     </div>
   </header>
 
+  <!-- RULES -->
+  <div class="rules-block">
+    <div class="rules-top">
+      <div>
+        <div class="rules-title">🪙 Как работают вьюшки</div>
+        <div class="rules-desc">
+          Снимаешь контент для отеля — получаешь вьюшки. Тратишь на себя: еда, отдых, впечатления.
+          Контент проверяет СММ-менеджер — принятые работы начисляются на твой счёт.
+        </div>
+      </div>
+      <div class="rate-badge">
+        <div class="rate-top">1 🪙 = 10 ₽</div>
+        <div class="rate-sub">номинальный курс<br>вьюшки</div>
+      </div>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-item"><strong>📸 Карусель (пакет фото)</strong>15 вьюшек за подачу</div>
+      <div class="rule-item"><strong>🎬 Сторис — фото</strong>7 вьюшек</div>
+      <div class="rule-item"><strong>🎬 Сторис — видео</strong>10 вьюшек</div>
+      <div class="rule-item"><strong>🎥 Reel / видео</strong>25 вьюшек</div>
+      <div class="rule-item"><strong>⭐ Reel с тобой в кадре</strong>35 вьюшек</div>
+      <div class="rule-item"><strong>🏆 Спецзадание</strong>до 50 вьюшек</div>
+    </div>
+  </div>
+
   <!-- SEARCH -->
   <div class="search-block">
     <div class="search-label">Найди <span>себя</span><br>по имени</div>
@@ -497,8 +638,8 @@ header {
     </div>
 
     <div class="panel">
-      <div class="panel-title">📋 Задания недели</div>
-      <div id="tasksList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
+      <div class="panel-title">📋 Задания</div>
+      <div class="tasks-scroll" id="tasksList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
     </div>
 
   </div>
@@ -619,16 +760,24 @@ function renderTasks() {
   const active = allData.tasks.filter(t => t['Название']);
   if (!active.length) { el.innerHTML = '<div style="color:var(--text-dim);font-size:13px">Нет активных заданий</div>'; return; }
 
-  el.innerHTML = active.map(t => `
-    <div class="task-item">
-      <div class="task-title">${t['Название']}</div>
-      <div class="task-desc">${t['Описание'] || ''}</div>
-      <div class="task-footer">
+  el.innerHTML = active.map((t, i) => `
+    <div class="task-item" id="task-${i}">
+      <div class="task-header" onclick="toggleTask(${i})">
+        <div class="task-title">${t['Название']}</div>
         <div class="task-reward">${t['Вьюшек']} 🪙</div>
-        <div class="task-deadline">${t['Дедлайн'] ? 'до ' + t['Дедлайн'] : ''}</div>
+        <div class="task-chevron">▼</div>
+      </div>
+      <div class="task-body">
+        <div class="task-desc">${t['Описание'] || 'Описание не указано'}</div>
+        ${t['Дедлайн'] ? `<div class="task-deadline">⏰ до ${t['Дедлайн']}</div>` : ''}
       </div>
     </div>
   `).join('');
+}
+
+function toggleTask(i) {
+  const el = document.getElementById('task-' + i);
+  el.classList.toggle('open');
 }
 
 function searchPerson() {
