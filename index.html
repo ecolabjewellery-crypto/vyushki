@@ -187,11 +187,18 @@ header {
 .employees-title span { color: var(--accent); }
 
 .employees-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
   margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.employees-grid::-webkit-scrollbar { height: 4px; }
+.employees-grid::-webkit-scrollbar-track { background: transparent; }
+.employees-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 .emp-card {
   background: var(--surface);
@@ -201,6 +208,8 @@ header {
   cursor: pointer;
   transition: border-color 0.2s, transform 0.15s;
   text-align: center;
+  flex-shrink: 0;
+  width: 130px;
 }
 .emp-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 .emp-card.active { border-color: var(--gold); background: var(--surface2); }
@@ -753,7 +762,7 @@ header {
 
     <div class="panel">
       <div class="panel-title">🏆 Рейтинг команды</div>
-      <div id="leaderboard"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
+      <div id="leaderboard" style="max-height:260px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
     </div>
 
     <div class="panel">
