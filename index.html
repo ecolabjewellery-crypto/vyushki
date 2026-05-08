@@ -161,10 +161,71 @@ header {
   font-size: 13px;
 }
 
-/* ── SEARCH ── */
-.search-block {
-  margin-bottom: 40px;
+/* ── EMPLOYEE CARDS ── */
+.employees-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
 }
+.employees-title span { color: var(--accent); }
+
+.employees-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.emp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  text-align: center;
+}
+.emp-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+.emp-card.active { border-color: var(--gold); background: var(--surface2); }
+
+.emp-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent2), #0a5c4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 auto 10px;
+}
+.emp-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.emp-balance {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+.emp-bal-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* ── SEARCH (kept minimal for fallback) ── */
+.search-block { display: none; }
 
 .search-label {
   font-family: 'Cormorant Garamond', serif;
@@ -314,15 +375,23 @@ header {
 
 .submissions-list { display: flex; flex-direction: column; gap: 8px; }
 .sub-item {
+  background: var(--surface2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--border);
+}
+.sub-item.approved { border-left-color: var(--ok); }
+.sub-item.pending  { border-left-color: #c9a84c; }
+.sub-item.rejected { border-left-color: var(--danger); }
+
+.sub-top {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--surface2);
-  border-radius: 10px;
-  padding: 10px 14px;
+  gap: 10px;
+  margin-bottom: 6px;
 }
-.sub-date { font-size: 12px; color: var(--text-dim); min-width: 70px; }
-.sub-type { font-size: 13px; flex: 1; }
+.sub-date { font-size: 11px; color: var(--text-dim); }
+.sub-type { font-size: 13px; font-weight: 600; flex: 1; }
 .sub-status {
   font-size: 11px;
   font-weight: 600;
@@ -330,16 +399,29 @@ header {
   border-radius: 20px;
 }
 .status-approved { background: #0d2e25; color: var(--ok); }
-.status-pending { background: #2a2510; color: #c9a84c; }
-.status-rejected { background: #2e1010; color: var(--danger); }
+.status-pending   { background: #2a2510; color: #c9a84c; }
+.status-rejected  { background: #2e1010; color: var(--danger); }
 
+.sub-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sub-desc { font-size: 12px; color: var(--text-dim); flex: 1; line-height: 1.4; }
+.sub-link {
+  font-size: 11px;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.sub-link:hover { text-decoration: underline; }
 .sub-views {
   font-family: 'Cormorant Garamond', serif;
   font-size: 18px;
   font-weight: 700;
   color: var(--gold);
-  min-width: 50px;
-  text-align: right;
+  white-space: nowrap;
 }
 
 .no-result {
@@ -572,22 +654,27 @@ header {
     </div>
   </div>
 
-  <!-- SEARCH -->
-  <div class="search-block">
-    <div class="search-label">Найди <span>себя</span><br>по имени</div>
-    <div class="search-row">
-      <input class="search-input" id="searchInput" type="text" placeholder="Имя Фамилия..." autocomplete="off">
-      <button class="search-btn" onclick="searchPerson()">Найти</button>
-    </div>
+  <!-- REWARDS (moved up) -->
+  <div class="panel" style="margin-bottom:16px">
+    <div class="panel-title">🎁 На что тратить вьюшки</div>
+    <div id="rewardsList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
   </div>
 
   <!-- ERROR -->
   <div class="error-banner" id="errorBanner">
-    Не удалось загрузить данные из Google Sheets. Проверьте что таблица опубликована (Файл → Поделиться → Опубликовать в интернете).
+    Не удалось загрузить данные из Google Sheets. Проверьте что таблица опубликована и доступна по ссылке.
   </div>
 
   <!-- LOADING -->
   <div class="loading" id="loadingIndicator">Загружаем данные...</div>
+
+  <!-- EMPLOYEE CARDS -->
+  <div id="employeesSection">
+    <div class="employees-title">Выбери <span>себя</span></div>
+    <div class="employees-grid" id="employeesGrid">
+      <div style="color:var(--text-dim);font-size:13px">Загрузка...</div>
+    </div>
+  </div>
 
   <!-- PROFILE CARD -->
   <div class="profile-card" id="profileCard">
@@ -595,7 +682,7 @@ header {
       <div class="profile-avatar" id="profileAvatar">М</div>
       <div>
         <div class="profile-name" id="profileName">Имя Фамилия</div>
-        <div class="profile-sub" id="profileSub">участник программы</div>
+        <div class="profile-sub">участник программы</div>
       </div>
       <div class="balance-display">
         <div class="balance-num" id="profileBalance">0</div>
@@ -614,17 +701,16 @@ header {
       </div>
       <div class="pstat">
         <div class="pstat-val" id="statPubs">0</div>
-        <div class="pstat-lbl">публикаций</div>
+        <div class="pstat-lbl">принято публикаций</div>
       </div>
     </div>
 
     <div class="section-title">История подач</div>
     <div class="submissions-list" id="submissionsList"></div>
-  </div>
 
-  <!-- NO RESULT -->
-  <div class="no-result" id="noResult">
-    Сотрудник не найден. Проверь написание имени — оно должно совпадать с таблицей.
+    <div style="margin-top:16px;text-align:center">
+      <button onclick="closeProfile()" style="background:none;border:1px solid var(--border);color:var(--text-dim);border-radius:8px;padding:8px 20px;cursor:pointer;font-size:13px">← Назад ко всем</button>
+    </div>
   </div>
 
   <hr class="divider">
@@ -642,12 +728,6 @@ header {
       <div class="tasks-scroll" id="tasksList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
     </div>
 
-  </div>
-
-  <!-- REWARDS -->
-  <div class="panel" style="margin-bottom:0">
-    <div class="panel-title">🎁 На что тратить вьюшки</div>
-    <div id="rewardsList"><div style="color:var(--text-dim);font-size:13px">Загрузка...</div></div>
   </div>
 
   <!-- SUBMIT -->
@@ -714,6 +794,7 @@ async function loadAll() {
     renderLeaderboard();
     renderRewards();
     renderTasks();
+    renderEmployees();
   } catch(e) {
     document.getElementById('errorBanner').classList.add('visible');
     console.error(e);
@@ -780,41 +861,49 @@ function toggleTask(i) {
   el.classList.toggle('open');
 }
 
-function searchPerson() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const profileCard = document.getElementById('profileCard');
-  const noResult = document.getElementById('noResult');
+function renderEmployees() {
+  const grid = document.getElementById('employeesGrid');
+  const people = allData.balances.filter(r => r['Имя']);
+  if (!people.length) { grid.innerHTML = '<div style="color:var(--text-dim);font-size:13px">Нет данных</div>'; return; }
 
-  profileCard.classList.remove('visible');
-  noResult.classList.remove('visible');
+  grid.innerHTML = people.map((p, i) => {
+    const initials = p['Имя'].split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    return `
+      <div class="emp-card" id="empcard-${i}" onclick="openProfile(${i})">
+        <div class="emp-avatar">${initials}</div>
+        <div class="emp-name">${p['Имя']}</div>
+        <div class="emp-balance">${Number(p['Баланс']||0)}</div>
+        <div class="emp-bal-label">🪙 вьюшек</div>
+      </div>`;
+  }).join('');
+}
 
-  if (!q) return;
+function openProfile(i) {
+  const person = allData.balances.filter(r => r['Имя'])[i];
+  if (!person) return;
 
-  const person = allData.balances.find(r =>
-    r['Имя'] && r['Имя'].toLowerCase().includes(q)
-  );
-
-  if (!person) {
-    noResult.classList.add('visible');
-    return;
-  }
+  // highlight card
+  document.querySelectorAll('.emp-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById('empcard-' + i);
+  if (card) card.classList.add('active');
 
   const name = person['Имя'];
+  const q = name.toLowerCase();
   const earned = Number(person['Начислено'] || 0);
-  const spent = Number(person['Потрачено'] || 0);
+  const spent  = Number(person['Потрачено'] || 0);
   const balance = Number(person['Баланс'] || 0);
 
-  document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('profileAvatar').textContent = initials;
   document.getElementById('profileName').textContent = name;
   document.getElementById('profileBalance').textContent = balance;
   document.getElementById('statEarned').textContent = earned;
   document.getElementById('statSpent').textContent = spent;
 
-  // Submissions for this person
   const subs = allData.submissions.filter(s => {
-    const name = s['Твоё имя и фамилия'] || s['Имя'] || '';
-    return name.toLowerCase().includes(q);
-  }).sort((a,b) => (b['Timestamp']||b['Дата']||'').localeCompare(a['Timestamp']||a['Дата']||''));
+    const n = s['Твоё имя и фамилия'] || s['Имя'] || '';
+    return n.toLowerCase().includes(q);
+  }).sort((a,b) => (b['Timestamp']||'').localeCompare(a['Timestamp']||''));
 
   document.getElementById('statPubs').textContent = subs.filter(s => (s['Статус']||'').toLowerCase() === 'approved').length;
 
@@ -822,29 +911,39 @@ function searchPerson() {
   if (!subs.length) {
     list.innerHTML = '<div style="color:var(--text-dim);font-size:13px;padding:8px 0">Подач ещё нет</div>';
   } else {
-    const statusLabel = { approved: 'принято', pending: 'на проверке', rejected: 'отклонено' };
+    const statusLabel = { approved: 'принято ✅', pending: 'на проверке', rejected: 'отклонено' };
     const statusClass = { approved: 'status-approved', pending: 'status-pending', rejected: 'status-rejected' };
     list.innerHTML = subs.map(s => {
       const st = (s['Статус']||'pending').toLowerCase();
-      const date = s['Timestamp'] ? new Date(s['Timestamp']).toLocaleDateString('ru-RU') : (s['Дата']||'—');
+      const date = s['Timestamp'] ? new Date(s['Timestamp']).toLocaleDateString('ru-RU') : '—';
       const type = s['Тип контента'] || s['Тип'] || 'Контент';
+      const desc = s['Описание (что снял, где, когда)'] || s['Описание'] || '';
+      const link = s['Ссылка на google drive'] || s['Ссылка'] || '';
+      const views = s['Вьюшки'] || 0;
       return `
-        <div class="sub-item">
-          <div class="sub-date">${date}</div>
-          <div class="sub-type">${type}</div>
-          <div class="sub-status ${statusClass[st] || 'status-pending'}">${statusLabel[st] || st}</div>
-          <div class="sub-views">${st === 'approved' ? (s['Вьюшки']||0) + ' 🪙' : '—'}</div>
+        <div class="sub-item ${st}">
+          <div class="sub-top">
+            <div class="sub-date">${date}</div>
+            <div class="sub-type">${type}</div>
+            <div class="sub-status ${statusClass[st] || 'status-pending'}">${statusLabel[st] || st}</div>
+          </div>
+          <div class="sub-bottom">
+            <div class="sub-desc">${desc || '—'}</div>
+            ${link ? `<a class="sub-link" href="${link}" target="_blank">📎 файл</a>` : ''}
+            <div class="sub-views">${st === 'approved' ? views + ' 🪙' : '—'}</div>
+          </div>
         </div>`;
     }).join('');
   }
 
-  profileCard.classList.add('visible');
+  document.getElementById('profileCard').classList.add('visible');
+  document.getElementById('profileCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Enter в поиске
-document.getElementById('searchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') searchPerson();
-});
+function closeProfile() {
+  document.getElementById('profileCard').classList.remove('visible');
+  document.querySelectorAll('.emp-card').forEach(c => c.classList.remove('active'));
+}
 
 // Запуск
 loadAll();
